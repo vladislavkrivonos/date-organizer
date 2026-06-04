@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+.romantic-background {
+  background:
+    radial-gradient(circle at 18% 20%, rgba(255, 214, 102, 0.28), transparent 28%),
+    radial-gradient(circle at 82% 14%, rgba(104, 73, 166, 0.22), transparent 25%),
+    linear-gradient(135deg, #fff7ed 0%, #ffdce8 38%, #d8edf0 70%, #f7d7e5 100%);
+}
+
+.romantic-background::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.45) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.38) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent 82%);
+}
+
+.welcome-panel,
+.form-panel {
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.58);
+  box-shadow: 0 28px 80px rgba(82, 26, 50, 0.18);
+  backdrop-filter: blur(18px);
+}
+
+.heart-shape {
+  background: #d81b60;
+  animation: heartbeat 2.8s ease-in-out infinite;
+}
+
+.heart-shape::before,
+.heart-shape::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  background: #d81b60;
+}
+
+.heart-shape::before {
+  top: -50%;
+  left: 0;
+}
+
+.heart-shape::after {
+  left: 50%;
+  top: 0;
+}
+
+.float-decoration {
+  animation: floaty 5.5s ease-in-out infinite;
+  filter: drop-shadow(0 12px 20px rgba(86, 30, 52, 0.22));
+}
+
+.delay-0 {
+  animation-delay: 0ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+.delay-500 {
+  animation-delay: 500ms;
+}
+
+.delay-700 {
+  animation-delay: 700ms;
+}
+
+.delay-1000 {
+  animation-delay: 1000ms;
+}
+
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1) rotate(-45deg);
+  }
+
+  45% {
+    transform: scale(1.08) rotate(-45deg);
+  }
+}
+
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+
+  50% {
+    transform: translateY(-14px) rotate(5deg);
+  }
+}
