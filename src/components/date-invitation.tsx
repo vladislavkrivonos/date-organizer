@@ -13,6 +13,7 @@ type DateInvitationProps = {
   metadataEmail: string;
 };
 
+type Screen = "welcome" | "details" | "loading" | "thank-you";
 type SendState = "idle" | "sending" | "success" | "error";
 
 const floatingDecorations = [
@@ -24,7 +25,7 @@ const floatingDecorations = [
 ];
 
 export function DateInvitation({ name, metadataEmail }: DateInvitationProps) {
-  const [screen, setScreen] = useState<"welcome" | "details">("welcome");
+  const [screen, setScreen] = useState<Screen>("welcome");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedActivity, setSelectedActivity] = useState<Activity | "">("");
   const [noButtonPosition, setNoButtonPosition] = useState({ x: 0, y: 0 });
@@ -59,6 +60,7 @@ export function DateInvitation({ name, metadataEmail }: DateInvitationProps) {
 
     setSendState("sending");
     setErrorMessage("");
+    setScreen("loading");
 
     try {
       const response = await fetch("/api/confirm-date", {
@@ -81,8 +83,11 @@ export function DateInvitation({ name, metadataEmail }: DateInvitationProps) {
       }
 
       setSendState("success");
+      await new Promise((resolve) => setTimeout(resolve, 850));
+      setScreen("thank-you");
     } catch (error) {
       setSendState("error");
+      setScreen("details");
       setErrorMessage(
         error instanceof Error ? error.message : "The love letter could not be sent.",
       );
@@ -149,7 +154,7 @@ export function DateInvitation({ name, metadataEmail }: DateInvitationProps) {
               </button>
             </div>
           </div>
-        ) : (
+        ) : screen === "details" ? (
           <div className="grid w-full gap-6 lg:grid-cols-[1.05fr_0.95fr]">
             <section className="form-panel px-4 py-5 sm:px-6 sm:py-7">
               <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -251,17 +256,57 @@ export function DateInvitation({ name, metadataEmail }: DateInvitationProps) {
                 {sendState === "sending" ? "Sending..." : "Confirm our date"}
               </button>
 
-              {sendState === "success" && (
-                <p className="mt-4 rounded-2xl border border-[#7fb38d] bg-[#f1fff4] px-4 py-3 text-sm font-bold text-[#236035]">
-                  Sent. The date is officially on the love ledger.
-                </p>
-              )}
               {sendState === "error" && (
                 <p className="mt-4 rounded-2xl border border-[#df8d94] bg-[#fff1f3] px-4 py-3 text-sm font-bold text-[#8b2431]">
                   {errorMessage}
                 </p>
               )}
             </section>
+          </div>
+        ) : screen === "loading" ? (
+          <div
+            className="welcome-panel flex w-full max-w-xl flex-col items-center px-5 py-12 text-center sm:px-10 sm:py-14"
+            role="status"
+            aria-live="polite"
+          >
+            <div className="relative h-24 w-24">
+              <div className="absolute inset-0 rounded-full border-4 border-[#ffd1df] border-t-[#d81b60] animate-spin" />
+              <div className="absolute inset-4 flex items-center justify-center rounded-full bg-white/70 text-4xl shadow-inner">
+                💌
+              </div>
+            </div>
+            <p className="mt-7 text-sm font-semibold uppercase tracking-[0.28em] text-[#8a314b]">
+              Sealing it with a kiss
+            </p>
+            <h2 className="mt-3 text-3xl font-black text-[#341320] sm:text-4xl">
+              Sending our little love note...
+            </h2>
+          </div>
+        ) : (
+          <div className="welcome-panel w-full max-w-3xl px-5 py-12 text-center sm:px-10 sm:py-16">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.32em] text-[#8a314b]">
+              Thank you, sweetheart
+            </p>
+            <h1 className="mx-auto max-w-2xl text-balance text-4xl font-black leading-tight text-[#341320] sm:text-6xl">
+              It&apos;s a date, {name}! 💖
+            </h1>
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-[#66364b] sm:text-xl">
+              Your yes has been safely delivered. I&apos;ll bring the romance, the smiles, and
+              probably too much excitement.
+            </p>
+
+            <div className="mx-auto mt-8 grid max-w-xl gap-3 rounded-3xl border border-[#efabc0] bg-white/65 p-5 text-left text-sm leading-6 text-[#66364b] sm:text-base">
+              <div>
+                <span className="font-bold text-[#341320]">Date:</span> {selectedDateLabel}
+              </div>
+              <div>
+                <span className="font-bold text-[#341320]">Plan:</span> {selectedActivity}
+              </div>
+            </div>
+
+            <div className="mt-8 text-5xl" aria-hidden="true">
+              🥰 💐 ✨
+            </div>
           </div>
         )}
       </section>
